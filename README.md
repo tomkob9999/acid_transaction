@@ -1,6 +1,6 @@
 # An Attempt to Formalize ACID in Transaction
 
-This paper presents a formal framework to guarantee atomicity and isolation in transactional systems using minimal, well-defined rules and preconditions. By focusing on sequential state transitions and synchronized operation sets, we demonstrate how atomicity and isolation naturally lead to consistent and dependable transactional systems. The framework integrates rollback handling as an inherent part of state transitions and addresses challenges in practical implementation.
+This paper presents a formal framework to guarantee atomicity and isolation in transactional systems using minimal, well-defined rules and preconditions. By focusing on sequential state transitions and synchronized operation sets, together with durability as pre-condition, we demonstrate how atomicity and isolation naturally lead to consistent transactional systems. The framework integrates rollback handling as an inherent part of state transitions and addresses challenges in practical implementation.
 
 ---
 
@@ -15,14 +15,17 @@ In transactional systems, ensuring correctness requires atomicity and isolation 
 - **State Variables:** Denoted as $X$, $Y$, and $Z$, representing the condition of the system at different stages of the operation sequence.
 - **Addition (`+`), Subtraction (`-`):** Denotes the application of an operation to a state. For example, $X = V + a$ means applying operation $a$ to base state $V$ to derive state $X$.   $X - a^{-1}$ undoes the effect of operation $a$.
 - **Equality (`=`):** Expresses consistency relationships, not an operand, between states and operations.
-- **Operation Set:** A collection of sub-operations that must complete simultaneously. If their completion times differ, they are treated as separate operations.
+- **Operation Set:** A collection of sub-operations that must complete simultaneously. If their completion times differ, they are treated as separate operations.  With this, Operation is defined as $Operation \in  \{Operation|Operation Set\}$.
 
 ---
 
 ## 3. Preconditions
 To guarantee correctness, the following preconditions must hold:
 
-1. **Ordering of Operations:**
+1. **Durability:**
+   State does not change unless some operations are made.
+   
+2. **Ordering of Operations:**
 
 $$
 a < b < c
@@ -30,13 +33,14 @@ $$
 
 Operations are applied sequentially, respecting this order.
 
-2. **State Birth Times:**
+3. **State Birth Times:**
    States are initialized when their respective operations are completed.
    
 $$
 birthof(X) = c, \quad birthof(Y) = b, \quad birthof(Z) = c
 $$
 
+   
 These preconditions ensure that state transitions and dependencies between operations are well-defined.
 
 ---

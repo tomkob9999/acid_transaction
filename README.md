@@ -11,9 +11,9 @@ In transactional systems, ensuring correctness requires atomicity and isolation 
 
 ## 2. Core Notations and Definitions
 
-- **Operations:** Actions or transformations denoted as $a$, $b$, and $c$ that update the system’s state.
-- **State Variables:** Denoted as $X$, $Y$, and $Z$, representing the condition of the system at different stages of the operation sequence.
-- **Addition (`+`), Subtraction (`-`):** Denotes the application of an operation to a state. For example, $X = V + a$ means applying operation $a$ to base state $V$ to derive state $X$.   $X - a^{-1}$ undoes the effect of operation $a$.
+- **Operations:** Actions or transformations denoted as $O_1$, $O_2$, and $O_3$ that update the system’s state.
+- **State Variables:** Denoted as $S_0$, $S_1$, $S_2$, and $S_3$, representing the condition of the system at different stages of the operation sequence.
+- **Addition (`+`), Subtraction (`-`):** Denotes the application of an operation to a state. For example, $S_1 = S_0 + O_1$ means applying operation $O_1$ to base state $S_0$ to derive state $S_1$.   $S_1 + O_1^{-1}$ undoes the effect of operation $O_1$.
 - **Equality (`=`):** Expresses consistency relationships, not an operand, between states and operations.
 - **Operation Set:** A collection of sub-operations that must complete simultaneously. If their completion times differ, they are treated as separate operations.  With this, Operation is defined as $Operation \in  \{Operation|Operation Set\}$.
 
@@ -28,7 +28,7 @@ To guarantee correctness, the following preconditions must hold:
 2. **Ordering of Operations:**
 
 $$
-a < b < c
+O_1 < O_2 < O_3
 $$
 
 Operations are applied sequentially, respecting this order.
@@ -37,9 +37,12 @@ Operations are applied sequentially, respecting this order.
    States are initialized when their respective operations are completed.
    
 $$
-birthof(X) = c, \quad birthof(Y) = b, \quad birthof(Z) = c
+birthof(O_1) = S_1, \quad birthof(O_2) = S_2, \quad birthof(O_3) = S_3
 $$
 
+4. **Previous State:**
+   $S_0$ is the previous state before occurrence of $O_1$
+   
    
 These preconditions ensure that state transitions and dependencies between operations are well-defined.
 
@@ -48,29 +51,29 @@ These preconditions ensure that state transitions and dependencies between opera
 ## 4. Core Rules Governing State Evolution
 The system’s state evolves according to the following rules:
 
-1. **Initialization of $X$:**
+1. **Initialization of $S_1$:**
 
 $$
-X = V + a
+S_1 = S_0 + O_1
 $$
 
-State $X$ is derived from the base state $V$ through the application of operation $a$.
+State $S_1$ is derived from the base state $S_2$ through the application of operation $O_1$.
 
 3. **Update of $Y$:**
 
 $$
-Y = X + b
+S_2 = S_1 + O_2
 $$
 
-State $Y$ depends on the successful completion of state $X$ and operation $b$.
+State $S_2 $ depends on the successful completion of state $S_1$ and operation $O_2$.
 
-5. **Update of $Z$:**
+5. **Update of $S_3$:**
 
 $$
-Z = Y + c
+S_3 = S_2  + O_3
 $$
 
-The final state $Z$ is derived from state $Y$ after applying operation $c$.
+The final state $S_3$ is derived from state $S_2$ after applying operation $O_3$.
 
 These rules ensure that partial or intermediate updates do not propagate, maintaining atomicity at each step.
 
@@ -93,7 +96,7 @@ Rollback is treated as the inverse of forward operations:
 1. **Inverse State Transitions:**
 
 $$
-X - a^{-1} = V, \quad Y - b^{-1} = X, \quad Z - c^{-1} = Y
+\quad S_2 = S_3 + O_3^{-1}, \quad S_1 = S_2 + O_2^{-1}, \quad S_0 = S_1 + O_1^{-1}
 $$
 
    Rollback restores the system to its previous state by applying the inverse of the corresponding forward operations.

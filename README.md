@@ -82,6 +82,24 @@ These rules ensure that partial or intermediate updates do not propagate, mainta
 ## 5. Generalized Invariant for Multiple States and Operations
 The following invariant ensures correct state evolution across any number of operations and states:
 
+An **Operation Set** is defined as a collection of sub-operations that must complete simultaneously.
+
+Let $os= \{ o_1, o_2, \dots, o_n \}$ be a set of sub-operations, where each $o_i$ represents an individual operation.
+
+The **simultaneous completion requirement** is defined as:
+
+$$
+\forall o_i, o_j \in os, \quad t_{\text{completion}}(o_i) = t_{\text{completion}}(o_j)
+$$
+
+$Operation$ is defined to as an operation or an operation set: 
+
+$$
+Operation \in  \{Operation|Operation Set\}.
+$$
+
+The next state must be the state of the immediate result from the operation toward the previous state.
+
 $$
 \forall i, j \quad (i < j) \implies state_j = state_i + operation_j
 $$
@@ -90,16 +108,15 @@ This relationship guarantees that the most recent valid state is always used whe
 
 Alternatively, the following equation expresses more holistically with use of functions.
 
-$$
-\forall o \in operations, \quad \operatorname{positionAt}(operations, o) = \operatorname{positionAt}(states, \operatorname{stateAfter}(o))
-$$
-
-where
 
 - **Ordered sets** $operations$ and $states$:  
   - $operations = \{ o_1, o_2, \dots, o_n \}$ is the ordered set of events.  
-  - $states = \{ \operatorname{stateAfter}(o_1), \operatorname{stateAfter}(o_2), \dots, \operatorname{stateAfter}(o_n) \}$ is the ordered set of resulting states.
- - **Functions**: $\operatorname{stateAfter}(e)$ is the resulting state immediately after processing the event $e$. $\operatorname{positionAt}(oset, e)$ is the position of $e$ within the ordered set $oset$.
+  - $states = \{ stateAfter(o_1), stateAfter(o_2), \dots, stateAfter(o_n) \}$ is the ordered set of resulting states.
+ - **Functions**: $stateAfter(e)$ is the resulting state immediately after processing the event $e$. $positionAt(oset, e)$ is the position of $e$ within the ordered set $oset$.
+
+$$
+\forall o \in operations, \quad positionAt(operations, o) = positionAt(states, stateAfter(o))
+$$
 
 
 ---

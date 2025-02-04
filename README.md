@@ -88,6 +88,20 @@ $$
 
 This relationship guarantees that the most recent valid state is always used when applying the next operation.
 
+Alternatively, the following equation expresses more holistically with use of functions.
+
+$$
+\forall o \in operations, \quad \operatorname{positionAt}(operations, o) = \operatorname{positionAt}(states, \operatorname{stateAfter}(o))
+$$
+
+where
+
+- **Ordered sets** $operations$ and $states$:  
+  - $operations = \{ o_1, o_2, \dots, o_n \}$ is the ordered set of events.  
+  - $states = \{ \operatorname{stateAfter}(o_1), \operatorname{stateAfter}(o_2), \dots, \operatorname{stateAfter}(o_n) \}$ is the ordered set of resulting states.
+ - **Functions**: $\operatorname{stateAfter}(e)$ is the resulting state immediately after processing the event $e$. $\operatorname{positionAt}(oset, e)$ is the position of $e$ within the ordered set $oset$.
+
+
 ---
 
 ## 6. Rollback Handling as Inverse Operations
